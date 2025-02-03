@@ -1,0 +1,5 @@
+{
+    "require": {
+        "symfonycasts/verify-email-bundle": "^1.17"
+    }
+}
