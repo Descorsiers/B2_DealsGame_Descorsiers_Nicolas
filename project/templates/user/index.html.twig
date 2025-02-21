@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserController!{% endblock %}
+
+{% block body %}
+    <section id="updateUser">
+        <div>
+            <div>
+                <h1>
+                    Profil de {{ user.lastname }}
+                </h1>
+            </div>
+            <div>
+                <div>
+                    <p>
+                        Prénom : {{ user.lastname }}
+                    </p>
+                    <p>
+                        Nom : {{ user.firstname }}
+                    </p>
+                    <p>
+                        Adresse-email : {{ user.email }}
+                    </p>
+                    <p>
+                        Roles : {% for role in user.roles %} {{ role }} {% endfor %}
+                    </p>
+                </div>
+                {{ form_start(userForm) }}
+                    <div>
+                        <h2>
+                            Mettre à jour son compte
+                        </h2>
+                    </div>
+                    <div>
+                        <div>
+                            {{ form_label(userForm.lastname, 'Prénom') }}
+                            {{ form_widget(userForm.lastname) }}
+                        </div>
+                        <div>
+                            {{ form_label(userForm.firstname, 'Nom') }}
+                            {{ form_widget(userForm.firstname) }}
+                        </div>
+                        <div>
+                            {{ form_label(userForm.email, 'Email') }}
+                            {{ form_widget(userForm.email) }}
+                        </div>
+                    </div>
+                    <button type="submit">
+                        Mettre à jour mon profile
+                    </button>
+                {{ form_end(userForm) }}
+            </div>
+        </div>
+        <div>
+            <div>
+                <h2>
+                    Mes annonces 
+                </h2>
+            </div>
+            <div>
+                {% for announcement in user.announcements %}
+                    <div>
+                        <p>
+                            {{ announcement.title }}
+                        </p>
+                        <div>
+                            <a href="/announcementUpdate/{{announcement.id}}">
+                                <i class="fa-solid fa-pen"></i>
+                            </a>
+                            <button>
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div>
+            <button>
+                Supprimer mes annonces
+            </button>
+            <button>
+                Supprimer mon compte 
+            </button>
+        </div>
+        <div class="popup">
+            <div>
+                <h2>
+                    Attention, action définitive !
+                </h2>
+                <p>
+                    Vous allé supprimer {% if popupText is defined %} {{ popupText }} {% endif %}
+                </p>
+            </div>
+              {{ form_start(deleteAnnouncementForm) }}
+                    {{ form_widget(deleteAnnouncementForm.id) }}
+                    <button type="submit">
+                        Supprimer
+                    </button>    
+              {{ form_end(deleteAnnouncementForm) }}
+        </div>
+        {% for message in app.flashes('notice') %}
+            <div class="flash-notice">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </section>
+{% endblock %}

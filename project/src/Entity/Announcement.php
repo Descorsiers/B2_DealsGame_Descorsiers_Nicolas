@@ -2,10 +2,14 @@
 
 namespace App\Entity;
 
+use App\Enum\Category;
+use Symfony\Component\HttpFoundation\File\File;
 use App\Repository\AnnouncementRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: AnnouncementRepository::class)]
+#[Vich\Uploadable]
 class Announcement
 {
     #[ORM\Id]
@@ -22,19 +26,35 @@ class Announcement
     #[ORM\Column(length: 255)]
     private ?string $author = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $picture = null;
+    #[Vich\UploadableField(mapping: 'announcement', fileNameProperty: 'imageName')]
+    private ?File $imageFile = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?string $imageName = null;
+
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    private ?\DateTimeInterface $updatedAt = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[ORM\Column(enumType: Category::class)]
+    private ?Category $category = null;
+
     #[ORM\ManyToOne(inversedBy: 'announcements')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Category $category = null;
+    private ?User $author_id = null;
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
     }
 
     public function getTitle(): ?string
@@ -73,14 +93,29 @@ class Announcement
         return $this;
     }
 
-    public function getPicture(): ?string
+    public function setImageFile(?File $imageFile = null): void
     {
-        return $this->picture;
+        $this->imageFile = $imageFile;
+
+        if (null !== $imageFile) {
+            // It is required that at least one field changes if you are using doctrine
+            // otherwise the event listeners won't be called and the file is lost
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+    }
+    public function getImageFile(): ?File
+    {
+        return $this->imageFile;
     }
 
-    public function setPicture(string $picture): static
+    public function getImageName(): ?string
     {
-        $this->picture = $picture;
+        return $this->imageName;
+    }
+
+    public function setImageName(?string $picture): static
+    {
+        $this->imageName = $picture;
 
         return $this;
     }
@@ -102,11 +137,22 @@ class Announcement
         return $this->category;
     }
 
-    public function setCategory(?Category $category): static
+    public function setCategory(Category $category): static
     {
         $this->category = $category;
 
         return $this;
     }
 
+    public function getAuthorId(): ?User
+    {
+        return $this->author_id;
+    }
+
+    public function setAuthorId(?User $author_id): static
+    {
+        $this->author_id = $author_id;
+
+        return $this;
+    }
 }

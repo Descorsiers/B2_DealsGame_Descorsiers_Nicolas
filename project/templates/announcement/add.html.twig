@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ formTitle }}{% endblock %}
+{% block body %}
+    <section id="announcementFormContent">
+        <div class="announcementFormTitle">
+            <h1 class="mainTitle">
+                {{ formTitle }}
+            </h1>
+            {% if author is defined %}
+                <h2>
+                    {{ author }}
+                </h2>
+            {% endif %}
+        </div>
+        {{ form_errors(announcementForm) }}
+
+    {{ form_start(announcementForm) }}
+        {{ form_row(announcementForm.title, {
+            label: 'Titre',
+            value: add.title is defined ? add.title : ''        
+        }) }}
+        {{ form_row(announcementForm.description, {
+            label: 'Description',
+            value: add.description is defined ? add.description : ''
+        }) }}
+        {{ form_row(announcementForm.imageFile, {
+            label: 'Image',
+        }) }}
+        {{ form_row(announcementForm.category, {
+            label: 'Catégorie',
+        }) }}
+
+        <button type="submit" class="btn">{{ buttonText }}</button>
+    {{ form_end(announcementForm) }}
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}

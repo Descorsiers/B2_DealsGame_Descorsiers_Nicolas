@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'annonce !{% endblock %}
+
+{% block body %} 
+    <section id="announcementDetails">
+        <div class="announcementDetailsContainer">
+            <div class="announcementDetailsFirst">
+                <figure class="announcementDetailsPicture">
+                    <img src="{{ asset('images/announcement/' ~ announcement.imageName)}}" alt="Test">
+                </figure>
+                <h1 class="announcementDetailsTitle">
+                    {{ announcement.title }}
+                </h1>
+            </div>
+            <div class="announcementDetailsSecond">
+                <div class="announcementDetailsPosted">
+                    <h2>
+                        Annonce posté le : {{ announcement.createdAt.date|date("m/d/Y") }} par {{ announcement.author }}
+                    </h2>
+                </div>
+                <div class="announcementDetailsDescription">
+                    <h2>
+                        Description de l'annonce 
+                    </h2>
+                    <p class="announcementDetailsDescriptionText">
+                        {{ announcement.description }}
+                    </p>
+                </div>
+                <div class="announcementDetailsCategory">
+                    <h2>
+                        Catégorie de l'annonce 
+                    </h2>
+                    <p class="announcementDetailsDescriptionText">
+                        {{ announcement.category.value }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+    </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
