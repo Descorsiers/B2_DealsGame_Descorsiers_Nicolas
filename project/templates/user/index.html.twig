@@ -64,10 +64,10 @@
                             {{ announcement.title }}
                         </p>
                         <div>
-                            <a href="/announcementUpdate/{{announcement.id}}">
+                            <a href="/announcementUpdate/{{ announcement.id }}">
                                 <i class="fa-solid fa-pen"></i>
                             </a>
-                            <button>
+                            <button data-id="{{ announcement.id }}" class="deleteAnnouncement">
                                 <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
@@ -84,16 +84,16 @@
             </button>
         </div>
         <div class="popup">
-            <div>
-                <h2>
+            <div class"popup__content">
+                <h2 class="popup__title">
                     Attention, action définitive !
                 </h2>
-                <p>
+                <p class="popup__text">
                     Vous allé supprimer {% if popupText is defined %} {{ popupText }} {% endif %}
                 </p>
             </div>
-              {{ form_start(deleteAnnouncementForm) }}
-                    {{ form_widget(deleteAnnouncementForm.id) }}
+              {{ form_start(deleteAnnouncementForm, {'attr': {'class': 'deleteForm'}, 'action': path('delete_announcement', {'id': '__ID__'})}) }}
+                    {{ form_widget(deleteAnnouncementForm.id, {'attr': {'class': 'inputHide'}}) }}
                     <button type="submit">
                         Supprimer
                     </button>    

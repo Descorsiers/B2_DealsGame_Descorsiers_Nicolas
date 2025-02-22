@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Announcement;
 use App\Form\AnnouncementFormType;
+use App\Form\DeleteAnnouncementType;
 use DateTime;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,12 +29,16 @@ final class AnnouncementController extends AbstractController
     #[Route('/newAnnouncement', name: 'create_announcement')]
     public function add(EntityManagerInterface $em, Request $request): Response
     {
+        /** @var \App\Entity\User $user */ 
+        $user = $this->getUser();
+
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
+
         $annoucemments = new Announcement();
         $form = $this->createForm(AnnouncementFormType::class, $annoucemments);
         $form->handleRequest($request);
-        
-        /** @var \App\Entity\User $user */ 
-        $user = $this->getUser();
         $author = $user->getLastname(); 
 
 
@@ -43,8 +48,6 @@ final class AnnouncementController extends AbstractController
             $annoucemments->setAuthor($author);
             $annoucemments->setAuthorId($user);
             $annoucemments->setCreatedAt(new \DateTimeImmutable());
-            // $annoucemments->setImageFile($form->get('imageFile')->getData());
-            // $annoucemments->setImageName($form->get('imageFile')->getData());
             $annoucemments->setCategory($form->get('category')->getData());
 
             $em->persist($annoucemments);
@@ -63,12 +66,16 @@ final class AnnouncementController extends AbstractController
     #[Route('/announcementUpdate/{id}', name: 'update_announcement')]
     public function update(EntityManagerInterface $em, Request $request, int $id): Response
     {
+        /** @var \App\Entity\User $user */ 
+        $user = $this->getUser();
+
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
+
         $add = $em->getRepository(Announcement::class)->find($id);
         $form = $this->createForm(AnnouncementFormType::class, $add);
         $form->handleRequest($request);
-
-        /** @var \App\Entity\User $user */ 
-        $user = $this->getUser();
         $author = $user->getLastname(); 
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -105,5 +112,59 @@ final class AnnouncementController extends AbstractController
         return $this->render('announcement/details.html.twig', [
             'announcement' => $annoucemment
         ]);
+    }
+
+    #[Route('/announcement/delete/{id}', name: 'delete_announcement')]
+    public function deleteOne(EntityManagerInterface $em, int $id, Request $request): Response
+    {
+        /** @var \App\Entity\User $user */ 
+        $user = $this->getUser();
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
+        $userId = $user->getId();
+        $announcement = $em->getRepository(Announcement::class)->find($id); 
+        $deleteAnnouncementForm = $this->createForm(DeleteAnnouncementType::class, $announcement);
+        $deleteAnnouncementForm->handleRequest($request);
+
+        if ($deleteAnnouncementForm->isSubmitted() && $deleteAnnouncementForm->isValid()){
+            if ($user->getId() != $announcement->getAuthorId()->getId()) {
+                $this->addFlash('notice', 'Vous n\'avez pas les droits pour effectuer cette action !');
+            }
+            else{
+                $this->addFlash('notice', 'Votre annonce à bien était supprimé !');
+                $em->remove($announcement);
+                $em->flush();
+            }
+        }
+
+        return $this->redirectToRoute('app_user', ['id' => $userId]);
+    }
+
+    #[Route('/announcement/deleteAll', name: 'delete_announcement')]
+    public function deleteAll(EntityManagerInterface $em, int $id, Request $request): Response
+    {
+
+        /** @var \App\Entity\User $user */ 
+        $user = $this->getUser();
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
+        $userId = $user->getId();
+        $announcement = $em->getRepository(Announcement::class)->findAll($id); 
+        $deleteAnnouncementForm = $this->createForm(DeleteAnnouncementType::class, $announcement);
+        $deleteAnnouncementForm->handleRequest($request);
+
+        if ($deleteAnnouncementForm->isSubmitted() && $deleteAnnouncementForm->isValid()){
+            if ($user->getId() != $announcement[0]->getAuthorId()->getId()) {
+                $this->addFlash('notice', 'Vous n\'avez pas les droits pour effectuer cette action !');
+            }
+            else{
+                $this->addFlash('notice', 'Toutes les annonces ont étaient supprimés');
+                $em->getRepository(Announcement::class)->deleteAllByAuthorId($userId);
+            }
+        }
+
+        return $this->redirectToRoute('app_user', ['id' => $userId]);
     }
 }

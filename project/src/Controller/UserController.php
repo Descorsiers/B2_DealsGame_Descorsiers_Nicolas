@@ -22,7 +22,6 @@ final class UserController extends AbstractController
         $user = $em->getRepository(User::class)->find($id);
         $updateForm = $this->createForm(ChangeUserInformationsType::class, $user);
         $deleteAnnouncementForm = $this->createForm(DeleteAnnouncementType::class, $announcement);
-        $deleteAnnouncementsForm = $this->createForm(DeleteAllAnnouncementType::class, $announcement);
         $updateForm->handleRequest($request);
 
         if ($updateForm->isSubmitted() && $updateForm->isValid()) {
@@ -30,31 +29,10 @@ final class UserController extends AbstractController
             $user->setFirstName($updateForm->get('firstname')->getData());
             $user->setEmail($updateForm->get('email')->getData());
 
-            // dd($user);
-
             $em->flush();
 
             return $this->redirectToRoute('app_user', ['id' => $id]);
         }
-
-        $deleteAnnouncementForm->handleRequest($request);
-
-        if ($deleteAnnouncementForm->isSubmitted() && $deleteAnnouncementForm->isValid()){
-            $announcement = $em->getRepository(Announcement::class)->find($deleteAnnouncementForm->get('id')->getData());
-
-            if ($user->getId() != $announcement->getAuthorId()->getId()) {
-                dd('différent');
-            }
-            else{
-                $this->addFlash('notice', 'Votre annonce à bien était supprimé !');
-                $em->remove($announcement);
-                $em->flush();
-            }
-
-            return $this->redirectToRoute('app_user', ['id' => $id]);
-        }
-
-
 
         return $this->render('user/index.html.twig', [
             'userForm' => $updateForm,

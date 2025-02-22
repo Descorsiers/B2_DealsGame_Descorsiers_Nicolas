@@ -16,6 +16,19 @@ class AnnouncementRepository extends ServiceEntityRepository
         parent::__construct($registry, Announcement::class);
     }
 
+    public function deleteAllByAuthorId(int $authorId)
+    {
+
+        $qb = $this->createQueryBuilder('item')
+            ->delete()
+            ->where('item.author_id_id = :authorId')
+            ->setParameter('authorId', $authorId);
+            
+        $query = $qb->getQuery();
+        
+        return $query->execute();
+    }
+
 //    /**
 //     * @return Announcement[] Returns an array of Announcement objects
 //     */
