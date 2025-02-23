@@ -18,6 +18,13 @@ final class AnnouncementController extends AbstractController
     #[Route('/announcement', name: 'app_announcement')]
     public function index(EntityManagerInterface $em): Response
     {
+        /** @var \App\Entity\User $user */ 
+        $user = $this->getUser();
+
+        if(!$user){
+            return $this->redirectToRoute('app_login');
+        }
+
         $repository = $em->getRepository(Announcement::class);
         $annoucemments = $repository->findAll();
         return $this->render('announcement/index.html.twig', [

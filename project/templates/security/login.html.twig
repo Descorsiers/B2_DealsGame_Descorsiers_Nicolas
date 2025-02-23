@@ -3,14 +3,39 @@
 {% block title %}Log in!{% endblock %}
 
 {% block body %}
-<form method="post">
+<section id="formLogin">
+    <form method="post" class="formLogin">
+        <figure>
+            <img src="{{ asset('images/form/login.png')}}">
+        </figure>
+        <div class="formLogin__input">
+            <input class="formLogin__input-text" type="email" value="{{ last_username }}" placeholder="Email" name="email" id="inputEmail" autocomplete="email" required autofocus>
+            <input class="formLogin__input-text" type="password" name="password" id="inputPassword" placeholder="Password"  autocomplete="current-password" required>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+        </div>
+        <div class="formLogin__secondary">
+            <label>
+                <input class="formLogin__input-checkbox" type="checkbox" name="_remember_me"> Se souvenir de moi
+            </label>
+            <a href="/reset-password" class="formLogin__resetPassword">
+                MdP oubliés?
+            </a>
+        </div>
+        <button type="submit" class="formLogin__submit">
+            <h1 class="formLogin__submit-title">
+                LOGIN
+            </h1>
+        </button>
+    </form>
+</section>
+{# <form method="post">
     {% if error %}
         <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
     {% endif %}
 
     {% if app.user %}
         <div class="mb-3">
-            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_login') }}">Logout</a> 
+            You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_login') }}">Logout</a>  
         </div>
     {% endif %}
 
@@ -33,5 +58,5 @@
     <button class="btn btn-lg btn-primary" type="submit">
         Se connecter
     </button>
-</form>
+</form> #}
 {% endblock %}
