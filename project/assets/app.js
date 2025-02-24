@@ -7,7 +7,7 @@ import './bootstrap.js';
  */
 import './styles/app.css';
 
-document.addEventListener('DOMContentLoaded', function(){
+document.addEventListener('turbo:load', function(){
 
     const deleteAnnouncement = document.querySelectorAll('.deleteAnnouncement');
     const deletePopup = document.querySelector('.popup');

@@ -3,23 +3,31 @@
 {% block title %}Hello AnnouncementController!{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/src/Controller/AnnouncementController.php</code></li>
-        <li>Your template at <code>/var/www/templates/announcement/index.html.twig</code></li>
-    </ul>
-    <h2>
-        {% for annoucemment in announcements %}
-            {{ annoucemment.title }}
-        {% endfor %}    
-    </h2>
-</div>
+{% include 'components/header.html.twig' %}
+<section id="indexAnnouncement">
+    <h1 class="indexAnnouncement__title">
+        Bienvenue sur DealsGames !
+    <h1>
+    <div class="indexAnnouncement__container">
+        {% for announcemment in announcements %}
+            <div class="indexAnnouncement__card">
+                <figure class="indexAnnouncement__card-picture">
+                    <img src="{{ asset('images/announcement/' ~announcemment.imageName) }}">
+                </figure>
+                <div class="indexAnnouncement__card-content">
+                    <h2 class="indexAnnouncement__secondTitle">
+                        {{ announcemment.title }}
+                    </h2>
+                    <p>
+                        {{ announcemment.description }}
+                    </p>
+                    <a href="{{ path('details_announcement', {'id': announcemment.id}) }}" class="indexAnnouncement__link">
+                            {{ announcemment.category.value }}
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
 {% endblock %}

@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class AnnouncementController extends AbstractController
 {
-    #[Route('/announcement', name: 'app_announcement')]
+    #[Route('/', name: 'app_announcement')]
     public function index(EntityManagerInterface $em): Response
     {
         /** @var \App\Entity\User $user */ 
@@ -30,6 +30,7 @@ final class AnnouncementController extends AbstractController
         return $this->render('announcement/index.html.twig', [
             'controller_name' => 'AnnouncementController',
             'announcements' => $annoucemments ,
+            'userId' => $user->getId()
         ]);
     
     }
